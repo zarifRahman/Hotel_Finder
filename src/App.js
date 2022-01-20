@@ -13,7 +13,7 @@ const App = () => {
   const [childClicked, setChildClicked] = useState(null);
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState('restaurants');
-  const [rating, setRating] = useState('all');
+  const [rating, setRating] = useState('');
   const [filterRating, setFilterRating] = useState([]);
 
 
@@ -27,7 +27,8 @@ const App = () => {
 
   // filtering data according to Rating
   useEffect(() => {
-    const filteredPlaces = places?.filter((place) => place.rating > rating);
+    console.log({rating});
+    const filteredPlaces = places?.filter((place) => Number(place.rating) > rating);
     setFilterRating(filteredPlaces);
   },[rating])
 
@@ -37,6 +38,8 @@ const App = () => {
     getPlacesData(type, bounds.sw, bounds.ne).then((data) => {
       // will get restaurants according to our bound (current position)
       setPlaces(data);
+      setFilterRating([]);
+      setRating('');
       setLoading(false);
     })
   },[type, coordinates, bounds]);
@@ -44,11 +47,11 @@ const App = () => {
   return (
     <>
       <CssBaseline />
-      <Header />
+      <Header setCoordinates={setCoordinates}/>
       <Grid container spacing={3} style={{width: '100%'}}>
         <Grid item xs={12} md={4}>
           <List 
-            places={places} 
+            places={filterRating.length ? filterRating : places}
             childClicked={childClicked}
             loading={loading}
             type={type}
@@ -59,7 +62,7 @@ const App = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Map
-            places={filterRating ? filterRating : places}
+            places={filterRating.length ? filterRating.length : places}
             setBounds={setBounds} 
             setCoordinates={setCoordinates} 
             coordinates={coordinates}
