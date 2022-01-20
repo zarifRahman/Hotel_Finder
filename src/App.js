@@ -11,6 +11,7 @@ const App = () => {
   const [coordinates, setCoordinates] = useState({});
   const [bounds, setBounds] = useState([]);
   const [childClicked, setChildClicked] = useState(null);
+  const [loading, setLoading] = useState(false);
 
 
   // get user current location
@@ -21,10 +22,12 @@ const App = () => {
   },[])
 
   useEffect(() => {
+    setLoading(true);
     // .then because it is a async function //
     getPlacesData(bounds.sw, bounds.ne).then((data) => {
       // will get restaurants according to our bound (current position)
       setPlaces(data);
+      setLoading(false);
     })
   },[coordinates, bounds]);
 
@@ -34,7 +37,11 @@ const App = () => {
       <Header />
       <Grid container spacing={3} style={{width: '100%'}}>
         <Grid item xs={12} md={4}>
-          <List places={places} childClicked={childClicked}/>
+          <List 
+            places={places} 
+            childClicked={childClicked}
+            loading={loading}
+          />
         </Grid>
         <Grid item xs={12} md={8}>
           <Map
