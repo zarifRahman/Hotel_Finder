@@ -13,7 +13,9 @@ const App = () => {
   const [childClicked, setChildClicked] = useState(null);
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState('restaurants');
-  const [rating, setRating] = useState('');
+  const [rating, setRating] = useState('all');
+  const [filterRating, setFilterRating] = useState([]);
+
 
 
   // get user current location
@@ -21,7 +23,13 @@ const App = () => {
     navigator.geolocation.getCurrentPosition(({coords: {latitude, longitude}})=>{
       setCoordinates({ lat: latitude, lng: longitude });
     })
-  },[])
+  },[]);
+
+  // filtering data according to Rating
+  useEffect(() => {
+    const filteredPlaces = places?.filter((place) => place.rating > rating);
+    setFilterRating(filteredPlaces);
+  },[rating])
 
   useEffect(() => {
     setLoading(true);
@@ -51,7 +59,7 @@ const App = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Map
-            places={places}
+            places={filterRating ? filterRating : places}
             setBounds={setBounds} 
             setCoordinates={setCoordinates} 
             coordinates={coordinates}
