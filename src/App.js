@@ -13,7 +13,7 @@ const App = () => {
   const [childClicked, setChildClicked] = useState(null);
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState('restaurants');
-  const [rating, setRating] = useState('');
+  const [rating, setRating] = useState("All");
   const [filterRating, setFilterRating] = useState([]);
   const [weatherData, setWeatherData] = useState([]);
 

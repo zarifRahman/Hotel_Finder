@@ -10,7 +10,7 @@ const List = ({ places, childClicked,loading , rating, setRating, type, setType}
   useEffect(() => {
     const refs  = Array(places?.length).fill().map((_, i) => elRefs[i] || createRef());
     setElRefs(refs);
-  },[places])    
+  },[])    
 
   return (
     <div className={classes.container}>
