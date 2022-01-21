@@ -28,21 +28,26 @@ const App = () => {
   // filtering data according to Rating
   useEffect(() => {
     console.log({rating});
-    const filteredPlaces = places?.filter((place) => Number(place.rating) > rating);
+    const filteredPlaces = places?.filter((place) => Number(place.rating) > rating) || [];
     setFilterRating(filteredPlaces);
   },[rating])
 
   useEffect(() => {
-    setLoading(true);
-    // .then because it is a async function //
-    getPlacesData(type, bounds.sw, bounds.ne).then((data) => {
-      // will get restaurants according to our bound (current position)
-      setPlaces(data);
-      setFilterRating([]);
-      setRating('');
-      setLoading(false);
-    })
+    if(bounds.sw && bounds.ne){
+      setLoading(true);
+      // .then because it is a async function //
+      getPlacesData(type, bounds.sw, bounds.ne).then((data) => {
+        // will get restaurants according to our bound (current position)
+        // remove the datat which has empty value
+        setPlaces(data?.filter((place)=> place.name && place.num_reviews > 0));
+        setFilterRating([]);
+        setRating('');
+        setLoading(false);
+      })
+    }
   },[type, coordinates, bounds]);
+
+
 
   return (
     <>
@@ -62,7 +67,7 @@ const App = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Map
-            places={filterRating.length ? filterRating.length : places}
+            places={filterRating.length ? filterRating : places}
             setBounds={setBounds} 
             setCoordinates={setCoordinates} 
             coordinates={coordinates}
