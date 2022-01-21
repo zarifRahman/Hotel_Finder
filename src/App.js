@@ -4,7 +4,7 @@ import Header from './Header/Header';
 import List from './List/List';
 import Map from './Map/Map';
 
-import { getPlacesData } from './api/index.js';
+import { getPlacesData, getWeatherData } from './api/index.js';
 
 const App = () => {
   const [places, setPlaces] = useState([]);
@@ -15,6 +15,7 @@ const App = () => {
   const [type, setType] = useState('restaurants');
   const [rating, setRating] = useState('');
   const [filterRating, setFilterRating] = useState([]);
+  const [weatherData, setWeatherData] = useState([]);
 
 
 
@@ -36,7 +37,8 @@ const App = () => {
     if(bounds.sw && bounds.ne){
       setLoading(true);
       // .then because it is a async function //
-      getPlacesData(type, bounds.sw, bounds.ne).then((data) => {
+      getPlacesData(type, bounds.sw, bounds.ne)
+        .then((data) => {
         // will get restaurants according to our bound (current position)
         // remove the datat which has empty value
         setPlaces(data?.filter((place)=> place.name && place.num_reviews > 0));
@@ -44,6 +46,10 @@ const App = () => {
         setRating('');
         setLoading(false);
       })
+      getWeatherData(coordinates.lat, coordinates.lng)
+        .then((data) => {
+          setWeatherData(data);
+        })
     }
   },[type, coordinates, bounds]);
 
@@ -67,6 +73,7 @@ const App = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Map
+            weatherData={weatherData}
             places={filterRating.length ? filterRating : places}
             setBounds={setBounds} 
             setCoordinates={setCoordinates} 
